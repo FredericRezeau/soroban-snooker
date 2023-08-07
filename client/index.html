@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <title>Soroban Snooker Game</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="A snooker game built on Soroban with smart-contract pool physics validation, optional payments and rewards." />
+    <meta name="author" content="Frederic Kyung-jin Rezeau" />
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200&family=Roboto&display=swap" rel="stylesheet">
+
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            touch-action: none;
+        }
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="https://litemint.azureedge.net/static/engine/1.2.1/camera.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/soroban-client/0.9.2/soroban-client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.6.0/index.min.js"></script>
+    <script src="game.js?v=1.0"></script>
+</body>
+</html>
