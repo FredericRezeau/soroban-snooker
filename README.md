@@ -25,7 +25,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About Soroban Snooker
 
-Soroban Snooker is a smart contract, running on the Rust-based smart contracts platform [Soroban](https://soroban.stellar.org), and deployed on the [Stellar](https://stellar.org) blockchain. This project, accompanied by a simple game client, aims to demonstrate various use cases and functionalities of web3 gaming on Soroban, including:
+Soroban Snooker is a smart contract, running on the Rust-based smart contracts platform [Soroban](https://soroban.stellar.org), and deployed on the [Stellar](https://stellar.org) blockchain. This project, accompanied by a simple [game client](https://snooker.litemint.com), aims to demonstrate various use cases and functionalities of web3 gaming on Soroban, including:
 
 - [X] How to implement In-App Purchases to receive payments from players.
 - [X] How to issue rewards to players such as achievement NFTs, as part of the gameplay experience.
@@ -38,8 +38,7 @@ Soroban Snooker is a smart contract, running on the Rust-based smart contracts p
 
 ### Built With
 
-- Soroban smart contracts: [Soroban](https://soroban.stellar.org)
-- Stellar blockchain: [Stellar](https://stellar.org)
+[Soroban smart contracts](https://soroban.stellar.org) _Preview 10 (July 13, 2023)_
 
 [![Rust][rust-shield]][rust-url]
 [![Javascript][javascript-shield]][javascript-url]
