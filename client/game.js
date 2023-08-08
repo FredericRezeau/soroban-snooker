@@ -264,23 +264,21 @@
     }
 
     namespace.StrikeSolver.prototype.applyCollisions = function () {
-        if (this.status === namespace.StrikeStatus.Success && !this.pocketed) {
+        if (this.completed) return;
+
+        if (this.status === namespace.StrikeStatus.Success) {
             const dx = this.pocket.x - this.balls[1].x;
             const dy = this.pocket.y - this.balls[1].y;
             const distanceSquared = dx * dx + dy * dy;
             if (distanceSquared > this.lastDist) {
                 this.pocketed = true;
-                this.balls[1].vx = dx / distanceSquared * 1;
-                this.balls[1].vy = dy / distanceSquared * 1;
-                setTimeout(() => {
-                    this.completed = true;
-                }, 1000)
+                this.completed = true;
             }
             this.lastDist = distanceSquared;
         }
         else if ((this.balls[0].collided || !this.curIter) && this.status === namespace.StrikeStatus.Running) {
-            const dx = this.balls[1].x * this.balls[1].vx * 1000 - this.balls[1].x;
-            const dy = this.balls[1].y * this.balls[1].vy * 1000 - this.balls[1].y;
+            const dx = this.balls[1].x * this.balls[1].vx * Number.MAX_SAFE_INTEGER - this.balls[1].x;
+            const dy = this.balls[1].y * this.balls[1].vy * Number.MAX_SAFE_INTEGER - this.balls[1].y;
             const d = dx * (this.balls[1].y - this.pocket.y) - dy * (this.balls[1].x - this.pocket.x);
             const discriminant = ballRadius * 1.5 * ballRadius * 1.5 * (dx * dx + dy * dy) - d * d;
             this.status = discriminant >= 0 && this.balls[0].collided ? namespace.StrikeStatus.Success : namespace.StrikeStatus.Failed;
@@ -579,13 +577,6 @@
         if (SnookerContract.table && namespace.strikeSolver.pocketed) {
             namespace.pocketedScale += elapsed * 0.3;
             namespace.pocketedScale = Math.min(0.1, namespace.pocketedScale);
-            if (namespace.pocketedScale > 0.018) {
-                const entities = namespace.strikeSolver.getEntities();
-                entities[1].vx = 0;
-                entities[1].vy = 0;
-                entities[1].x = entities[2].x;
-                entities[1].y = entities[2].y;
-            }
         }
         else {
             namespace.pocketedScale = 0;
@@ -604,28 +595,62 @@
         updateCameras(elapsed);
         namespace.strikeSolver.update(elapsed);
 
-        if (namespace.strikeSolver.completed) {
-            currentStrike += 1;
-            if (namespace.StrikeStatus.Success === namespace.strikeSolver.status) {
-                strikesWon += 1;
-            }
-
-            if (SnookerContract.table?.balls
-                && currentStrike < SnookerContract.table.balls.length) {
-                namespace.strikeSolver.reset(
-                    { x: 5, y: 10, vx: 0, vy: 0, color: "red" },
-                    SnookerContract.table.balls[currentStrike],
-                    SnookerContract.table.pockets[currentStrike]);
+        // 2023-08-08 - To improve visual feedback when potting the ball (especially when close to the edges)
+        // we update its velocity to spiral it toward the pot center.
+        const potBall = (ball, pocket) => {
+            if (!pocket.target) {
+                pocket.target = true;
+                pocket.initialDistance = Math.sqrt((pocket.x - ball.x) ** 2 + (pocket.y - ball.y) ** 2);
+                pocket.angle = 0; 
+                pocket.iterations = 0;        
+                pocket.angleIncrement = (2 * Math.PI * elapsed * Math.sqrt(ball.vx ** 2 + ball.vy ** 2)) / (pocket.initialDistance * 3);
+                pocket.approachAngle = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
+            }        
+            
+            const spiralFactor = 0.1;
+            pocket.iterations += 1;
+            if (pocket.angle < 2 * Math.PI * pocket.initialDistance * 2) {
+                const x = pocket.x + (pocket.initialDistance - spiralFactor * pocket.angle) * Math.cos(pocket.approachAngle - pocket.angle);
+                const y = pocket.y + (pocket.initialDistance - spiralFactor * pocket.angle) * Math.sin(pocket.approachAngle - pocket.angle);
+                ball.x = x;
+                ball.y = y;
+                ball.x += ball.vx * elapsed * 0.5;
+                ball.y += ball.vy * elapsed * 0.5;
+                pocket.angle += pocket.angleIncrement;
+                return false;
             }
             else {
-                SnookerContract.table = null;
-                namespace.strikeSolver.reset();
-                SnookerContract.play(SnookerContract.testSecret(), completedStrikes, strikesWon);
-                namespace.stageScreen = namespace.StageScreen.Score;
-                completedStrikes = [];
-                strikesWon = 0;
+                ball.x = pocket.x;
+                ball.y = pocket.y;
+                return pocket.iterations > 50;
             }
-            resetStrike();
+        }
+
+        const entities = namespace.strikeSolver.getEntities();
+        if (namespace.strikeSolver.completed) {
+            if (!namespace.strikeSolver.pocketed || potBall(entities[1], entities[2])) {
+                currentStrike += 1;
+                if (namespace.StrikeStatus.Success === namespace.strikeSolver.status) {
+                    strikesWon += 1;
+                }
+
+                if (SnookerContract.table?.balls
+                    && currentStrike < SnookerContract.table.balls.length) {
+                    namespace.strikeSolver.reset(
+                        { x: 5, y: 10, vx: 0, vy: 0 },
+                        SnookerContract.table.balls[currentStrike],
+                        SnookerContract.table.pockets[currentStrike]);
+                }
+                else {
+                    SnookerContract.table = null;
+                    namespace.strikeSolver.reset();
+                    SnookerContract.play(SnookerContract.testSecret(), completedStrikes, strikesWon);
+                    namespace.stageScreen = namespace.StageScreen.Score;
+                    completedStrikes = [];
+                    strikesWon = 0;
+                }
+                resetStrike();
+            }
         }
 
         if (!namespace.strikePos) {
@@ -662,7 +687,7 @@
                 context.drawImage(namespace.sprites, scale, scale * 3, scale * 3, scale * 3, ball.x - drawRadius, ball.y - drawRadius, drawRadius * 2, drawRadius * 2);
                 break;
             case "pocket":
-                drawRadius = ballRadius * 2.3;
+                drawRadius = ballRadius * 2.4;
                 context.drawImage(namespace.sprites, scale * 4, 0, scale * 3, scale * 3, ball.x - drawRadius, ball.y - drawRadius, drawRadius * 2, drawRadius * 2);
                 if (!SnookerContract.table) {
                     renderBall(ball, "colorball");
