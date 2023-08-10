@@ -17,7 +17,7 @@
     <br />
     <a href="https://snooker.litemint.com">Play Game Demo</a>
     ·
-    <a href="https://youtube.com/litemint">Developer Video Guide</a>
+    <a href="https://www.youtube.com/watch?v=hUvyr3XxHv0">Developer Video Guide</a>
   </p>
 </div>
 
