@@ -361,7 +361,7 @@
         run();
 
         // Freighter wallet.
-        if (!freighterApi || !freighterApi.isConnected()) {
+        if (!freighterApi || !await freighterApi.isConnected()) {
             namespace.walletStatus = namespace.WalletStatus.NotInstalled;
         }
         else {
