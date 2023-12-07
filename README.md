@@ -38,7 +38,7 @@ Soroban Snooker is a smart contract, running on the Rust-based smart contracts p
 
 ### Built With
 
-[Soroban smart contracts](https://soroban.stellar.org) _Preview 10 (July 13, 2023)_
+[Soroban smart contracts](https://soroban.stellar.org)
 
 [![Rust][rust-shield]][rust-url]
 [![Javascript][javascript-shield]][javascript-url]
@@ -63,8 +63,8 @@ Ensure you have the following installed:
 
 * Stellar
 
-  Create and fund your Stellar accounts for testing on Futurenet. You will need at least 2 accounts: an admin account and a player account. Use the link below to create and fund your accounts:
-  [https://laboratory.stellar.org/#account-creator?network=futurenet](https://laboratory.stellar.org/#account-creator?network=futurenet)
+  Create and fund your Stellar accounts for testing on Testnet. You will need at least 2 accounts: an admin account and a player account. Use the link below to create and fund your accounts:
+  [https://laboratory.stellar.org/#account-creator?network=test](https://laboratory.stellar.org/#account-creator?network=test)
 
 By following the above steps and setting up the required prerequisites, you will have your environment ready for working with the project.
 
@@ -82,11 +82,11 @@ By following the above steps and setting up the required prerequisites, you will
    ```sh
    cargo build --target wasm32-unknown-unknown --release
    ```
-4. Deploying to Futurenet:
+4. Deploying to Testnet:
    
-   Configure the Futurenet network:
+   Configure the Testnet network:
    ```sh
-   soroban config network add --rpc-url https://rpc-futurenet.stellar.org:443 --network-passphrase 'Test SDF Future Network ; October 2022' FUTURENET
+   soroban config network add --rpc-url https://soroban-testnet.stellar.org:443 --network-passphrase 'Test SDF Network ; September 2015' TESTNET
    ```
    Configure an identity for the admin:
    ```sh
@@ -94,7 +94,7 @@ By following the above steps and setting up the required prerequisites, you will
    ```
    Deploy the contract and save the output value (your contract ID) using:
    ```sh
-   soroban contract deploy --wasm target/wasm32-unknown-unknown/release/soroban_snooker.wasm --source ADMIN --network FUTURENET
+   soroban contract deploy --wasm target/wasm32-unknown-unknown/release/soroban_snooker.wasm --source ADMIN --network TESTNET
    ```
 5. Initializing the contract:
    
@@ -103,20 +103,20 @@ By following the above steps and setting up the required prerequisites, you will
    
    If you wish to initialize the contract using the native token, execute the following command:
    ```sh
-    soroban contract invoke --network FUTURENET --source ADMIN --id YOUR_CONTRACT_ID -- initialize --payment_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --admin ADMIN --payment_amount 10 --reward_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --reward_amount 10
+    soroban contract invoke --network TESTNET --source ADMIN --id YOUR_CONTRACT_ID -- initialize --payment_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --admin ADMIN --payment_amount 10 --reward_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --reward_amount 10
    ```
 6. Editing the contract ID:
    
    Open `client/game.js` and edit the following line with your contract id.
    ```js
-   const contractId = "CCXIBG3TA6Q7XEXLVXGPJTD3VZ5HBICJ5ZV5Z2NPSSVAEVJHNW4FXDGC";
+   const contractId = "CBNVFRQ53WCX6EEQ62UHMJKAMPMDG6GQNV2PGLX2AEW7D6WBXW5C3LJD";
    ```
 7. Optional, for Non-Freighter Users:
    
    If you are not using Freighter, open `client/game.js` and edit the following line with your test account secret seed.
    ```js
    // Enter a valid secret seed if you need testing without Freighter.
-   const testSecret = "S...ECRET";
+   const testSecret = "S---ECRET";
    ```
 
 <!-- USAGE EXAMPLES -->
@@ -127,18 +127,18 @@ To interact with the smart contract for testing _or just playing_, you have two 
 1. Using the Game Client:
 
     * Launch the `client/index.html` file. To bypass browser limitations, consider serving the `client/index.html` file through HTTP/S.
-    * If you're using Freighter, ensure that you are on Futurenet by going to `Settings > Preferences` and checking `ENABLE EXPERIMENTAL MODE`.
+    * If you're using Freighter, ensure that you are on testnet.
 
 2. Using the Soroban CLI:
 
     * To open a game session and get a pool table, execute the following command:
      ```sh
-      soroban contract invoke --network FUTURENET --source PLAYER --id YOUR_CONTRACT_ID -- insertcoin --player PLAYER
+      soroban contract invoke --network TESTNET --source PLAYER --id YOUR_CONTRACT_ID -- insertcoin --player PLAYER
      ```      
     
     * To withdraw payments, use the following command:
      ```sh
-      soroban contract invoke --network FUTURENET --source ADMIN --id YOUR_CONTRACT_ID -- withdraw --account YOUR_STELLAR_ADDRESS --amount 10
+      soroban contract invoke --network TESTNET --source ADMIN --id YOUR_CONTRACT_ID -- withdraw --account YOUR_STELLAR_ADDRESS --amount 10
      ```
 
 

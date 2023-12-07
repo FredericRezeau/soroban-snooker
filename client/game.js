@@ -9,18 +9,18 @@
 
     // Here, we handle all interactions with
     // the Soroban smart contract via Stellar transactions.
-    const contractId = "CCXIBG3TA6Q7XEXLVXGPJTD3VZ5HBICJ5ZV5Z2NPSSVAEVJHNW4FXDGC"; // Admin: GC6AZTBGSD3YLZ7MA7G4RU2Z5JNXQW3VK5P63JFR6FC6CVENKGLKEAZZ
+    const contractId = "CBNVFRQ53WCX6EEQ62UHMJKAMPMDG6GQNV2PGLX2AEW7D6WBXW5C3LJD"; // Admin: GDEYUWXSA24JAE7KT4WCCESJYL6L7JUOYWHYPGTMQGLKMJLMS4C3WIH7
 
-     // Set SnookerContract.localMode = true to emulate contract response locally.
-     // Used in 'Drill mode'
+    // Set SnookerContract.localMode = true to emulate contract response locally.
+    // Used in 'Drill mode'
 
     // Enter a valid secret seed if you need testing without Freighter.
-    const testSecret = "S...ECRET";
+    const testSecret = "S---ECRET";
 
     // Network settings.
-    const networkPassphrase = "Test SDF Future Network ; October 2022";
-    const rpcurl = "https://rpc-futurenet.stellar.org:443";
-    const server = new SorobanClient.Server(rpcurl, { allowHttp: true });
+    const networkPassphrase = "Test SDF Network ; September 2015";
+    const rpcurl = "https://soroban-testnet.stellar.org:443";
+    const server = new StellarSdk.SorobanRpc.Server(rpcurl, { allowHttp: true });
 
     let isBusy = false;
     let error = false;
@@ -37,18 +37,18 @@
         if (!namespace.localMode) {
             namespace.table = null;
             try {
-                const keys = SorobanClient.StrKey.isValidEd25519SecretSeed(secretKey)
-                    ? SorobanClient.Keypair.fromSecret(secretKey)
+                const keys = StellarSdk.StrKey.isValidEd25519SecretSeed(secretKey)
+                    ? StellarSdk.Keypair.fromSecret(secretKey)
                     : null;
 
                 const publicKey = keys ? keys.publicKey() : await freighterApi.getPublicKey();
                 const account = await server.getAccount(publicKey);
-                const contract = new SorobanClient.Contract(contractId);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee: 1000000, networkPassphrase: networkPassphrase })
+                const contract = new StellarSdk.Contract(contractId);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee: 1000000, networkPassphrase: networkPassphrase })
                     .addOperation(contract.call("insertcoin",
-                        new SorobanClient.Address(publicKey).toScVal()))
+                        new StellarSdk.Address(publicKey).toScVal()))
                     .setTimeout(30)
-                    .addMemo(SorobanClient.Memo.text("Soroban Snooker"))
+                    .addMemo(StellarSdk.Memo.text("Soroban Snooker"))
                     .build();
 
                 transaction = await server.prepareTransaction(transaction);
@@ -59,7 +59,7 @@
                 }
                 else {
                     const signedTransaction = await freighterApi.signTransaction(transaction.toEnvelope().toXDR("base64"), { networkPassphrase });
-                    transaction = new SorobanClient.Transaction(signedTransaction, networkPassphrase);
+                    transaction = new StellarSdk.Transaction(signedTransaction, networkPassphrase);
                 }
 
                 // Submit and poll the response.
@@ -72,9 +72,9 @@
 
                 // Retrieve the table data (also persisted in temporary storage).
                 if (response.status === "SUCCESS") {
-                    const txMeta = SorobanClient.xdr.TransactionMeta.fromXDR(response.resultMetaXdr, "base64");
+                    const txMeta = StellarSdk.xdr.TransactionMeta.fromXDR(response.resultMetaXdr.toXDR().toString("base64"), "base64");
                     const sorobanMeta = txMeta.v3().sorobanMeta().returnValue();
-                    const table = SorobanClient.scValToNative(sorobanMeta);
+                    const table = StellarSdk.scValToNative(sorobanMeta);
                     namespace.table = {
                         balls: table.balls.map(ball => ({ x: Number(ball[0]) / 1000, y: Number(ball[1]) / 1000, vx: 0, vy: 0 })),
                         pockets: table.pockets.map(pocket => ({ x: Number(pocket[0]) / 1000, y: Number(pocket[1]) / 1000 }))
@@ -119,20 +119,20 @@
 
         if (!namespace.localMode) {
             try {
-                const keys = SorobanClient.StrKey.isValidEd25519SecretSeed(secretKey)
-                    ? SorobanClient.Keypair.fromSecret(secretKey)
+                const keys = StellarSdk.StrKey.isValidEd25519SecretSeed(secretKey)
+                    ? StellarSdk.Keypair.fromSecret(secretKey)
                     : null;
 
                 const publicKey = keys ? keys.publicKey() : await freighterApi.getPublicKey();
-                const cueballs = SorobanClient.nativeToScVal(strikes, { type: "i128" });
+                const cueballs = StellarSdk.nativeToScVal(strikes, { type: "i128" });
                 const account = await server.getAccount(publicKey);
-                const contract = new SorobanClient.Contract(contractId);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee: 100000, networkPassphrase: networkPassphrase })
+                const contract = new StellarSdk.Contract(contractId);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee: 100000, networkPassphrase: networkPassphrase })
                     .addOperation(contract.call("play",
-                        new SorobanClient.Address(publicKey).toScVal(),
+                        new StellarSdk.Address(publicKey).toScVal(),
                         cueballs))
                     .setTimeout(30)
-                    .addMemo(SorobanClient.Memo.text("Soroban Snooker"))
+                    .addMemo(StellarSdk.Memo.text("Soroban Snooker"))
                     .build();
 
                 transaction = await server.prepareTransaction(transaction);
@@ -143,7 +143,7 @@
                 }
                 else {
                     const signedTransaction = await freighterApi.signTransaction(transaction.toEnvelope().toXDR("base64"), { networkPassphrase });
-                    transaction = new SorobanClient.Transaction(signedTransaction, networkPassphrase);
+                    transaction = new StellarSdk.Transaction(signedTransaction, networkPassphrase);
                 }
 
                 // Submit and poll the response.
@@ -155,9 +155,9 @@
                 }
 
                 if (response.status === "SUCCESS") {
-                    const meta = SorobanClient.xdr.TransactionMeta.fromXDR(response.resultMetaXdr, "base64");
+                    const meta = StellarSdk.xdr.TransactionMeta.fromXDR(response.resultMetaXdr.toXDR().toString("base64"), "base64");
                     const sorobanMeta = meta.v3().sorobanMeta().returnValue();
-                    namespace.score = SorobanClient.scValToNative(sorobanMeta);
+                    namespace.score = StellarSdk.scValToNative(sorobanMeta);
                 }
                 else {
                     console.error(JSON.stringify(response));
@@ -178,7 +178,7 @@
     // Some accessors.
     namespace.busy = () => isBusy;
     namespace.errored = () => error;
-    namespace.networkPassphrase = () => networkPassphrase;    
+    namespace.networkPassphrase = () => networkPassphrase;
     namespace.testSecret = () => testSecret;
 
     namespace.clearError = () => {
@@ -219,7 +219,7 @@
 
     namespace.StrikeStatus = { Paused: 0, Running: 1, Success: 2, Failed: 3 };
     namespace.StageScreen = { Intro: 0, Menu: 1, Score: 2 };
-    namespace.WalletStatus = { NotInstalled: 0, NotFuturenet: 1, Connected: 2 };
+    namespace.WalletStatus = { NotInstalled: 0, NotTestnet: 1, Connected: 2 };
 
     namespace.StrikeSolver = function () {
         if (!(this instanceof namespace.StrikeSolver)) {
@@ -367,7 +367,7 @@
         else {
             const networkDetails = await freighterApi.getNetworkDetails();
             if (networkDetails.networkPassphrase !== SnookerContract.networkPassphrase()) {
-                namespace.walletStatus = namespace.WalletStatus.NotFuturenet;
+                namespace.walletStatus = namespace.WalletStatus.NotTestnet;
             }
             else {
                 namespace.walletStatus = namespace.WalletStatus.Connected;
@@ -491,7 +491,7 @@
     const touchEnd = async () => {
         if (SnookerContract.busy()) return;
 
-        if(SnookerContract.errored()) {
+        if (SnookerContract.errored()) {
             SnookerContract.clearError();
         }
 
@@ -601,12 +601,12 @@
             if (!pocket.target) {
                 pocket.target = true;
                 pocket.initialDistance = Math.sqrt((pocket.x - ball.x) ** 2 + (pocket.y - ball.y) ** 2);
-                pocket.angle = 0; 
-                pocket.iterations = 0;        
+                pocket.angle = 0;
+                pocket.iterations = 0;
                 pocket.angleIncrement = (2 * Math.PI * elapsed * Math.sqrt(ball.vx ** 2 + ball.vy ** 2)) / (pocket.initialDistance * 3);
                 pocket.approachAngle = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
-            }        
-            
+            }
+
             const spiralFactor = 0.1;
             pocket.iterations += 1;
             if (pocket.angle < 2 * Math.PI * pocket.initialDistance * 2) {
@@ -832,7 +832,7 @@
                 setupButtonScale(namespace.insertCoinBtn);
                 if (namespace.walletStatus !== namespace.WalletStatus.Connected) {
                     drawText("Need Freighter wallet", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 4.7, 0.65);
-                    drawText("on Futurenet to play", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 5.7, 0.65);
+                    drawText("on Testnet to play", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 5.7, 0.65);
                     context.globalAlpha = 0.3;
                 }
                 context.drawImage(namespace.sprites, scale * 4, scale * 8, scale * 4, scale * 2, namespace.insertCoinBtn.x, namespace.insertCoinBtn.y, namespace.insertCoinBtn.width, namespace.insertCoinBtn.height);
@@ -889,7 +889,7 @@
             drawText(`CALLING SMART CONTRACT, PLEASE WAIT...`, "rgb(255,255,255)", namespace.size.x * 0.5, namespace.size.y * 0.7, 1, true);
         }
 
-        if(SnookerContract.errored()) {
+        if (SnookerContract.errored()) {
             context.fillStyle = "rgba(0, 0, 0, 0.7)";
             context.fillRect(0, 0, namespace.size.x, namespace.size.y);
             drawRoundRect("255, 0, 0", 0.5, namespace.size.x * 0.5 - namespace.unit * 9, namespace.size.y * 0.5 - namespace.unit * 2.5, namespace.unit * 18, namespace.unit * 4, namespace.unit * 0.5);

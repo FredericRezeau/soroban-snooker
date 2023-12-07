@@ -4,7 +4,7 @@ use std::println;
 
 use super::*;
 use soroban_sdk::{Env, Address, testutils::{Logs, Address as _}, log};
-use token::AdminClient as TokenAdminClient;
+use token::StellarAssetClient as TokenAdminClient;
 use token::Client as TokenClient;
 
 fn create_token_contract<'a>(e: &Env, admin: &Address) -> (TokenClient<'a>, TokenAdminClient<'a>) {

@@ -8,12 +8,12 @@ use soroban_sdk::{contracttype, Env};
 
 #[derive(Clone, Copy, Debug)]
 #[contracttype]
-pub struct Ball (pub i128, pub i128, pub i128, pub i128);
+pub struct Ball(pub i128, pub i128, pub i128, pub i128);
 // Destructure as Ball(position_x, position_y, velocity_x, velocity_y)
 
 #[derive(Clone, Copy, Debug)]
 #[contracttype]
-pub struct Pocket (pub i128, pub i128);
+pub struct Pocket(pub i128, pub i128);
 // Destructure as Pocket(position_x, position_y)
 
 pub struct Pool {
@@ -24,7 +24,6 @@ pub struct Pool {
 
 impl Pool {
     pub fn is_potted(&mut self, _env: &Env) -> bool {
-
         // In this function, we implement a simple (no friction, no cushion...)
         // physics simulation to determine whether the color ball was potted.
 
@@ -55,9 +54,10 @@ impl Pool {
             // Detect that the color_ball collides with the pocket after velocity adjustment.
             let dx = self.color_ball.0 * self.color_ball.2 * 5 - self.color_ball.0;
             let dy = self.color_ball.1 * self.color_ball.3 * 5 - self.color_ball.1;
-            let d = dx * (self.color_ball.1 - self.pocket.1) - dy * (self.color_ball.0 - self.pocket.0);
+            let d =
+                dx * (self.color_ball.1 - self.pocket.1) - dy * (self.color_ball.0 - self.pocket.0);
             let discriminant = radius_squared * (dx * dx + dy * dy) - d * d;
-            return discriminant >= 0
+            return discriminant >= 0;
         }
         false
     }
@@ -65,5 +65,9 @@ impl Pool {
 
 #[allow(non_snake_case)]
 pub fn Pool(cue_ball: Ball, color_ball: Ball, pocket: Pocket) -> Pool {
-    Pool { cue_ball, color_ball, pocket  }
+    Pool {
+        cue_ball,
+        color_ball,
+        pocket,
+    }
 }
