@@ -1,7 +1,8 @@
 [![MIT License][license-shield]][license-url]
 [![Twitter][twitter-shield]][twitter-url]
 
-
+![Build Status](https://github.com/FredericRezeau/soroban-snooker/actions/workflows/rust.yml/badge.svg)
+[![Current Crates.io Version](https://img.shields.io/crates/v/soroban-snooker.svg)](https://crates.io/crates/soroban-snooker)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -103,13 +104,13 @@ By following the above steps and setting up the required prerequisites, you will
    
    If you wish to initialize the contract using the native token, execute the following command:
    ```sh
-    soroban contract invoke --network TESTNET --source ADMIN --id YOUR_CONTRACT_ID -- initialize --payment_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --admin ADMIN --payment_amount 10 --reward_token CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT --reward_amount 10
+    soroban contract invoke --network TESTNET --source ADMIN --id YOUR_CONTRACT_ID -- initialize --payment_token CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC --admin ADMIN --payment_amount 10 --reward_token CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC --reward_amount 10
    ```
 6. Editing the contract ID:
    
    Open `client/game.js` and edit the following line with your contract id.
    ```js
-   const contractId = "CBNVFRQ53WCX6EEQ62UHMJKAMPMDG6GQNV2PGLX2AEW7D6WBXW5C3LJD";
+   const contractId = "CA7VJIGYO6OU5U5BQ77B6YAQDEQQ6E5U5OMVIG5XLHZKCHZLQA3N4Q7N";
    ```
 7. Optional, for Non-Freighter Users:
    

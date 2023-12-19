@@ -9,7 +9,7 @@
 
     // Here, we handle all interactions with
     // the Soroban smart contract via Stellar transactions.
-    const contractId = "CBNVFRQ53WCX6EEQ62UHMJKAMPMDG6GQNV2PGLX2AEW7D6WBXW5C3LJD"; // Admin: GDEYUWXSA24JAE7KT4WCCESJYL6L7JUOYWHYPGTMQGLKMJLMS4C3WIH7
+    const contractId = "CA7VJIGYO6OU5U5BQ77B6YAQDEQQ6E5U5OMVIG5XLHZKCHZLQA3N4Q7N"; // Admin: GDIWSQGU7P7GPFHAOZZMZZBYVQJNIRDCOZ3IAJID55T63XHI5COXPCH5
 
     // Set SnookerContract.localMode = true to emulate contract response locally.
     // Used in 'Drill mode'

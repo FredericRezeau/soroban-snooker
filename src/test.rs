@@ -20,8 +20,8 @@ fn run_all() {
     let env = Env::default();
     env.mock_all_auths();
 
-    let player = Address::random(&env);
-    let admin = Address::random(&env);
+    let player = Address::generate(&env);
+    let admin = Address::generate(&env);
     let contract_id = env.register_contract(None, Snooker);
     let snooker = SnookerClient::new(&env, &contract_id);
     let (payment_token, payment_token_admin) = create_token_contract(&env, &contract_id);

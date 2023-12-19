@@ -8,8 +8,7 @@
 
 mod pool;
 
-use soroban_macros::storage;
-use soroban_tools::storage;
+use soroban_kit::{storage, soroban_tools};
 
 use pool::{Ball, Pocket, Pool};
 use soroban_sdk::{
