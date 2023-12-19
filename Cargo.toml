@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Fred Kyung-jin Rezeau <fred@litemint.com>"]
 description = "A smart contract showcasing web3 gaming with Soroban on Stellar"
 repository = "https://github.com/fredericrezeau/soroban-snooker"
-keywords = ["web3", "soroban", "stellar", "blockchain", "smart-contract", "nft", "gaming"]
+keywords = ["web3", "soroban", "stellar", "nft", "gaming"]
 license-file = "LICENSE"
 readme = "README.md"
 
