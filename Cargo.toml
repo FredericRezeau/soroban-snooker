@@ -3,11 +3,11 @@ name = "soroban-snooker"
 version = "0.1.2"
 edition = "2021"
 authors = ["Fred Kyung-jin Rezeau <fred@litemint.com>"]
-
-[package.metadata]
-license = "MIT"
+description = "A smart contract showcasing web3 gaming with Soroban on Stellar"
 repository = "https://github.com/fredericrezeau/soroban-snooker"
-homepage = "https://litemint.com"
+keywords = ["web3", "soroban", "stellar", "blockchain", "smart-contract", "nft", "gaming"]
+license-file = "LICENSE"
+readme = "README.md"
 
 [lib]
 crate-type = ["cdylib"]
