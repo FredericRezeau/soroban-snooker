@@ -7,7 +7,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://snooker.litemint.com">
+  <a href="https://www.youtube.com/watch?v=hUvyr3XxHv0">
     <img src="client/banner.png" alt="Logo" width="600">
   </a>
 
