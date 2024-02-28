@@ -1,5 +1,5 @@
 /*
-   Date: August 2023
+   Date: Feb 2024
    Author: Fred Kyung-jin Rezeau <fred@litemint.com>
    MIT License
 */
@@ -9,7 +9,7 @@
 
     // Here, we handle all interactions with
     // the Soroban smart contract via Stellar transactions.
-    const contractId = "CBRB6EHL5TYQ7ARHJHGZBT577WIPMHE4O7SXUJKXDUO3NJ2M7TWPT2KL"; // Admin: GAXHDGANUXXTIPB5SUQ4M2RILV5WQQA722KSWESYR6Y4IZU5Y7X2QCYA
+    const contractId = "CAX3OHJQBIY47DM7DJ4AIGNJERD2CSLEN6OMCL7A722IZIJJR45VBSUT"; // Admin: GBGRO67GG3HRTBO5U7G3BIT7NFD7QWKXYXLWC4EMGXVSHET6GZNVPDL7
 
     // Set SnookerContract.localMode = true to emulate contract response locally.
     // Used in 'Drill mode'
@@ -47,7 +47,7 @@
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee: 1000000, networkPassphrase: networkPassphrase })
                     .addOperation(contract.call("insertcoin",
                         new StellarSdk.Address(publicKey).toScVal()))
-                    .setTimeout(30)
+                    .setTimeout(300)
                     .addMemo(StellarSdk.Memo.text("Soroban Snooker"))
                     .build();
 
@@ -131,7 +131,7 @@
                     .addOperation(contract.call("play",
                         new StellarSdk.Address(publicKey).toScVal(),
                         cueballs))
-                    .setTimeout(30)
+                    .setTimeout(300)
                     .addMemo(StellarSdk.Memo.text("Soroban Snooker"))
                     .build();
 
@@ -219,7 +219,7 @@
 
     namespace.StrikeStatus = { Paused: 0, Running: 1, Success: 2, Failed: 3 };
     namespace.StageScreen = { Intro: 0, Menu: 1, Score: 2 };
-    namespace.WalletStatus = { NotInstalled: 0, NotTestnet: 1, Connected: 2 };
+    namespace.WalletStatus = { NotInstalled: 0, InvalidNetwork: 1, Connected: 2 };
 
     namespace.StrikeSolver = function () {
         if (!(this instanceof namespace.StrikeSolver)) {
@@ -367,7 +367,7 @@
         else {
             const networkDetails = await freighterApi.getNetworkDetails();
             if (networkDetails.networkPassphrase !== SnookerContract.networkPassphrase()) {
-                namespace.walletStatus = namespace.WalletStatus.NotTestnet;
+                namespace.walletStatus = namespace.WalletStatus.InvalidNetwork;
             }
             else {
                 namespace.walletStatus = namespace.WalletStatus.Connected;
@@ -832,7 +832,7 @@
                 setupButtonScale(namespace.insertCoinBtn);
                 if (namespace.walletStatus !== namespace.WalletStatus.Connected) {
                     drawText("Need Freighter wallet", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 4.7, 0.65);
-                    drawText("on Testnet to play", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 5.7, 0.65);
+                    drawText("on Mainnet to play", "rgb(130,240,255)", namespace.insertCoinBtn.x + namespace.insertCoinBtn.width * 0.5, namespace.insertCoinBtn.y + namespace.unit * 5.7, 0.65);
                     context.globalAlpha = 0.3;
                 }
                 context.drawImage(namespace.sprites, scale * 4, scale * 8, scale * 4, scale * 2, namespace.insertCoinBtn.x, namespace.insertCoinBtn.y, namespace.insertCoinBtn.width, namespace.insertCoinBtn.height);
